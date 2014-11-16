@@ -1,12 +1,8 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 ##Loading and preprocessing the data
 
-```{r echo=TRUE}
+
+```r
 library(ggplot2)
 library(scales)
 setwd("e://rwork")
@@ -22,32 +18,38 @@ dat2<-aggregate(dat$steps,by=list(dat$interval),mean )
 
 ##What is mean total number of steps taken per day?
 
-- Mean is `r mean(dat1$x)`
-- Median is `r median(dat1$x)`
+- Mean is 1.0766189\times 10^{4}
+- Median is 10765
 
-```{r}
+
+```r
 pls<-ggplot(dat1,aes(x=Group.1,y=x))+geom_histogram(stat='identity')+
     labs(title = "Everyday Total Steps",x = "Date",y = "Total Steps")+
     scale_x_datetime(labels = date_format("%d/%m/%Y"))
 pls
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
 
 ##What is the average daily activity pattern?
 
-`r dat2[,1][dat2[,2]==max(dat2[,2])]`  5-minute intervals, on average across all the days in the dataset, contains the maximum number of steps.
+835  5-minute intervals, on average across all the days in the dataset, contains the maximum number of steps.
 
-```{r}
+
+```r
 pls<-ggplot(dat2,aes(x=Group.1,y=x))+geom_line()+labs(title = "Averaged Steps",x = "5-minute interval",y = "Averaged Steps")
 pls
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+
 ##Imputing missing values
 
-The dataset has a total of `r na_num` missing value.
+The dataset has a total of 2304 missing value.
 Every NA value was replaced by corresponding average steps for that 5-minute interval.
 
-```{r}
+
+```r
 dict=list()
 for (i in 1:nrow(dat2)){
     dict[as.character(dat2[i,1])]=dat2[i,2]
@@ -65,8 +67,10 @@ pls<-ggplot(dat_no_na1,aes(x=Group.1,y=x))+geom_histogram(stat='identity')+
 pls
 ```
 
-- The mean of new dataset is `r mean(dat_no_na1[,2])`
-- The median of new dataset is `r median(dat_no_na1[,2])`
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
+
+- The mean of new dataset is 1.0766189\times 10^{4}
+- The median of new dataset is 1.0766189\times 10^{4}
 
 There is not too much differences between datasest with and without NA values.
 For the method employed to replace NA values, there is no on the estimates of the total daily number of steps.
@@ -75,10 +79,13 @@ For the method employed to replace NA values, there is no on the estimates of th
 
 It seems more steps found in weekends than weekday as a whole. However, weekday enjoys more steps in morning.
 
-```{r}
-week=ifelse(weekdays(dat_na[,2])=="ÐÇÆÚÁù"|weekdays(dat_na[,2])=="ÐÇÆÚÈÕ","weekend","weekday")
+
+```r
+week=ifelse(weekdays(dat_na[,2])=="æ˜ŸæœŸå…­"|weekdays(dat_na[,2])=="æ˜ŸæœŸæ—¥","weekend","weekday")
 newdat=aggregate(dat_na$steps,by=list(dat_na$interval,week),mean)
 pls<-ggplot(newdat,aes(x=Group.1,y=x))+geom_line()+facet_grid(Group.2~.)+labs(title = "Averaged Steps",x = "5-minute interval",y = "Averaged Steps")
 pls
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
 
